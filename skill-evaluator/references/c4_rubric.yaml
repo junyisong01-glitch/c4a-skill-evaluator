@@ -1,0 +1,210 @@
+# C4 Evaluation Rubric — Machine-Readable Version
+# Used by c4-skill-evaluator for automated assessment
+
+# === COMPLETENESS: 5 Required Files ===
+required_deliverables:
+  skill_doc:
+    label_cn: "Skill 说明文档"
+    label_en: "Skill Description Document"
+    required: true
+    detection:
+      filename_patterns:
+        - "skill说明"
+        - "skill_doc"
+        - "skill-doc"
+        - "skill_description"
+      content_signals:
+        - "使用场景"
+        - "输入"
+        - "输出"
+        - "解决什么问题"
+        - "use case"
+        - "input"
+        - "output"
+      preferred_extensions: [".md", ".pdf", ".docx"]
+
+  executable_content:
+    label_cn: "可执行内容"
+    label_en: "Executable Skill Content"
+    required: true
+    detection:
+      filename_patterns:
+        - "技能"
+        - "skill"
+      content_signals:
+        - "```"          # code blocks
+        - "def "         # Python functions
+        - "class "       # Python classes
+        - "import "      # Python imports
+        - "---\nname:"   # YAML frontmatter
+      preferred_extensions: [".skill", ".py", ".md", ".zip"]
+
+  demo:
+    label_cn: "Demo（视频/截图）"
+    label_en: "Demo (video/screenshot)"
+    required: true
+    detection:
+      filename_patterns:
+        - "demo"
+        - "演示"
+        - "截图"
+        - "screen"
+        - "录屏"
+      preferred_extensions: [".mp4", ".mov", ".webm", ".png", ".jpg", ".gif"]
+
+  teaching_doc:
+    label_cn: "教学说明"
+    label_en: "Teaching Instructions"
+    required: true
+    detection:
+      filename_patterns:
+        - "教学说明"
+        - "教学"
+        - "tutorial"
+        - "teaching"
+        - "上手指南"
+        - "quickstart"
+        - "how-to"
+      content_signals:
+        - "上手"
+        - "步骤"
+        - "常见坑"
+        - "安装"
+        - "注意事项"
+        - "getting started"
+        - "step by step"
+      preferred_extensions: [".md", ".pdf", ".docx"]
+
+  ai_log:
+    label_cn: "AI 生成日志"
+    label_en: "AI Usage Log"
+    required: true
+    detection:
+      filename_patterns:
+        - "AI日志"
+        - "AI_log"
+        - "ai-log"
+        - "ai_日志"
+      content_signals:
+        - "使用的 AI"
+        - "AI 工具"
+        - "prompt"
+        - "迭代次数"
+        - "迭代"
+        - "ChatGPT"
+        - "Claude"
+        - "DeepSeek"
+      preferred_extensions: [".md", ".pdf", ".docx"]
+
+
+# === QUALITY: 4 Criteria (C4 Four Conditions) ===
+quality_criteria:
+  reusable:
+    label_cn: "可复用"
+    label_en: "Reusable"
+    weight: 0.25
+    description: "别人拿过去能直接用，不依赖你的特定环境"
+    positive_signals:
+      - "安装"
+      - "install"
+      - "环境要求"
+      - "requirements"
+      - "dependencies"
+      - "pip install"
+      - "npm install"
+      - "兼容"
+      - "compatible"
+    negative_signals:
+      - "/Users/"            # hardcoded macOS path
+      - "/home/"             # hardcoded Linux path
+      - "C:\\"               # hardcoded Windows path
+      - "我的电脑"
+      - "my_secret"
+      - "api_key = "         # hardcoded credentials
+    check_items:
+      - "Has installation instructions"
+      - "No hardcoded absolute paths"
+      - "Environment requirements listed"
+      - "Platform-agnostic or platform noted"
+
+  executable:
+    label_cn: "可执行"
+    label_en: "Executable"
+    weight: 0.25
+    description: "不是理论，是能跑的东西"
+    positive_signals:
+      - "```python"
+      - "```bash"
+      - "```javascript"
+      - "def "
+      - "class "
+      - "---\nname:"         # SKILL.md frontmatter
+      - "workflow"
+      - "pipeline"
+    check_items:
+      - "Contains runnable code, prompt, or workflow"
+      - ".skill package structure is valid (if applicable)"
+      - "No obvious syntax errors"
+      - "YAML frontmatter present (if SKILL.md)"
+
+  verifiable:
+    label_cn: "可验证"
+    label_en: "Verifiable"
+    weight: 0.25
+    description: "有明确的输入输出，能判断成功与否"
+    positive_signals:
+      - "测试"
+      - "test"
+      - "example"
+      - "示例"
+      - "预期"
+      - "expected"
+      - "demo"
+      - "result"
+      - "结果"
+    check_items:
+      - "Has test cases or examples"
+      - "Expected output is defined"
+      - "Demo shows real results"
+      - "Success/failure criteria are clear"
+
+  clear_io:
+    label_cn: "IO 明确"
+    label_en: "Clear I/O"
+    weight: 0.25
+    description: "输入什么、输出什么，一目了然"
+    positive_signals:
+      - "输入"
+      - "输出"
+      - "input"
+      - "output"
+      - "→"
+      - "接受"
+      - "返回"
+      - "generates"
+      - "produces"
+      - "returns"
+    io_pattern: "输入.*输出|input.*output|接受.*返回|给定.*得到"
+    check_items:
+      - "'输入X，输出Y' one-liner present"
+      - "Input types/formats specified"
+      - "Output types/formats specified"
+      - "Edge case inputs noted"
+
+
+# === SCORING ===
+scoring:
+  completeness:
+    full: "5/5 files present"
+    partial: "3-4/5 files present"
+    insufficient: "<3 files present"
+
+  quality_per_criterion:
+    pass: "✅ — meets criterion (2+ check items satisfied)"
+    partial: "⚠️ — partially meets (1 check item satisfied)"
+    fail: "❌ — does not meet (0 check items satisfied)"
+
+  composite:
+    formula: "completeness_score * 0.4 + quality_score * 0.6"
+    completeness_score: "files_present / 5.0"
+    quality_score: "sum(criterion_scores) / 4.0  # each ✅=1.0, ⚠️=0.5, ❌=0.0"
